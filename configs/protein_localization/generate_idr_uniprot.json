@@ -1,0 +1,35 @@
+{
+  "script": "generate_idr",
+  "paired_hyperparams": {
+    "prepend": [ 30,60,0],
+    "append":  [ 30,0,60]
+  },
+  "cartesian_hyperparams": {
+    "without_inner": [true],
+    "extend_inner": [false],
+    "comb_idx": [6],
+    "idx_offset": [0],
+    "device": [6],
+    "frac": [7],
+    "ref_pdb": ["/Mounts/rbg-storage1/users/ilanm/protgps/scripts/generate_idrs/gfp/2y0g.pdb"],
+    "seq_json": ["/Mounts/rbg-storage1/users/ilanm/protgps/scripts/generate_idrs/gfp/egfp.json"],
+    "logger_tags": ["idr_generation gfp"],
+    "to_save": ["/Mounts/rbg-storage1/users/ilanm/protgps/scripts/generate_idrs/uni_new"],
+    "beam_size": [3],
+    "algo": ["beam"],
+    "target": ["membrane"],
+    "target2": ["mitochondrion"],
+    "num_seqs": [40],
+    "classifier_path": ["/Mounts/rbg-storage1/users/ilanm/protgps/logs/4d7129b26971ef957503e2ad9c6ff334.args"],
+    "idr_threshold": [0.3],
+    "idr_min": [3],
+    "rmsd":[false],
+    "fold_every": [25],
+    "num_workers": [20],
+    "workspace": ["ilanm"],
+    "project_name": ["idr-generation"],
+    "logger_name": ["wandb"]
+  },
+    "available_gpus": ["0,1,2,3,4,5,6,7"]
+}
+  
