@@ -24,6 +24,27 @@ mamba activate protgps
 
 4. Download model checkpoints
 
+### PROTGPS
+
+Download model from release page and extract to `checkpoints/protgps`.
+
+
+### [ESM2](https://github.com/facebookresearch/esm/)
+
+```python
+import torch
+torch.hub.set_dir("checkpoints/esm2")
+model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t6_8M_UR50D")
+```
+### [DR-BERT](https://github.com/qanastek/DrBERT)
+
+```python
+from transformers import AutoModel, AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("Dr-BERT/DrBERT-7GB", cache_dir="checkpoints/drbert")
+model = AutoModel.from_pretrained("Dr-BERT/DrBERT-7GB", cache_dir="checkpoints/drbert")
+```
+
 5. To train model:
     
 ```
