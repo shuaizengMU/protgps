@@ -1,3 +1,7 @@
+# PROTGPS
+
+This repository contains code for the paper [Chemical codes promote selective compartmentalization of proteins](https://www.biorxiv.org/content/10.1101/2024.04.15.589616v2.abstract).
+
 ## Setup
 
 1. Install mamba (recommended) or conda
@@ -57,4 +61,18 @@ python scripts/dispatcher.py --config configs/protein_localization/full_prot_com
 cd esm/examples/lm-design
 ./generate_nucleolus.sh
 ./generate_nuclear_speckle.sh
+```
+
+----------------
+### Cite
+
+```bibtex
+@article{kilgore2024chemical,
+  title={Chemical codes promote selective compartmentalization of proteins},
+  author={Kilgore, Henry and Chinn, Itamar and Mikhael, Peter and Mitnikov, Ilan and Van Dongen, Catherine and Zylberberg, Guy and Afeyan, Lena and Banani, Salman and Wilson-Hawken, Susana and Lee, Tony and others},
+  journal={bioRxiv},
+  pages={2024--04},
+  year={2024},
+  publisher={Cold Spring Harbor Laboratory}
+}
 ```
