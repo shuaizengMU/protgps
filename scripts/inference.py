@@ -129,7 +129,7 @@ parser.add_argument("--output", "-o", type=str, help="Output file path")
 if __name__ == "__main__":
     args = parser.parse_args()
     # load model
-    model = load_model(args.model_path)
+    model = load_model(args.model_path, args.esm_dir)
     model.eval()
     print()
 
