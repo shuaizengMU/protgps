@@ -7,7 +7,8 @@ import pdb
 from torchmetrics.functional import (
     accuracy,
     auroc,
-    precision, recall,
+    precision,
+    recall,
     confusion_matrix,
     f1_score,
     precision_recall_curve,
@@ -21,8 +22,10 @@ EPSILON = 1e-6
 BINARY_CLASSIF_THRESHOLD = 0.5
 
 precision_recall = lambda probs, golds, **kwargs: (
-    precision(probs, golds, **kwargs), recall(probs, golds, **kwargs)
+    precision(probs, golds, **kwargs),
+    recall(probs, golds, **kwargs),
 )
+
 
 @register_object("classification", "metric")
 class BaseClassification(ProtGPS):
@@ -74,7 +77,9 @@ class BaseClassification(ProtGPS):
                 stats_dict["precision"], stats_dict["recall"] = precision_recall(
                     probs, golds, multiclass=False, num_classes=2
                 )
-                stats_dict["f1"] = f1_score(probs, golds, multiclass=False, num_classes=2)
+                stats_dict["f1"] = f1_score(
+                    probs, golds, multiclass=False, num_classes=2
+                )
                 pr, rc, _ = precision_recall_curve(probs, golds, num_classes=2)
                 stats_dict["pr_auc"] = auc(rc[-1], pr[-1])
                 try:
@@ -188,23 +193,45 @@ class MultiLabelClassification(ProtGPS):
         probs = predictions_dict["probs"]  # B, C
         preds = predictions_dict["preds"]  # B, C
         golds = predictions_dict["golds"].int()  # B, C
-        stats_dict["accuracy"] = accuracy(golds, preds, task='multilabel')
+        stats_dict["accuracy"] = accuracy(
+            golds, preds, task="multilabel", num_labels=args.num_classes
+        )
 
         stats_dict["precision"], stats_dict["recall"] = precision_recall(
-            probs, golds, num_classes=args.num_classes, average="macro", task='multilabel'
+            probs,
+            golds,
+            average="macro",
+            task="multilabel",
+            num_labels=args.num_classes,
         )
         stats_dict["f1"] = f1_score(
-            probs, golds, num_classes=args.num_classes, average="macro", task='multilabel'
+            probs,
+            golds,
+            num_labels=args.num_classes,
+            average="macro",
+            task="multilabel",
         )
         stats_dict["micro_f1"] = f1_score(
-            probs, golds, num_classes=args.num_classes, average="micro", task='multilabel'
+            probs,
+            golds,
+            num_labels=args.num_classes,
+            average="micro",
+            task="multilabel",
         )
         stats_dict["ap_score"] = average_precision(
-            probs, golds, num_classes=args.num_classes, average="macro", task='multilabel'
+            probs,
+            golds,
+            num_labels=args.num_classes,
+            average="macro",
+            task="multilabel",
         )
 
         stats_dict["roc_auc"] = auroc(
-            probs, golds, num_classes=args.num_classes, average="macro", task='multilabel'
+            probs,
+            golds,
+            num_labels=args.num_classes,
+            average="macro",
+            task="multilabel",
         )
 
         return stats_dict

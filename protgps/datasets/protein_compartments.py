@@ -53,7 +53,6 @@ class Protein_Compartments(AbstractDataset):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_sample(sample_dict, split_group):
@@ -121,6 +120,7 @@ class Protein_Compartments(AbstractDataset):
         )
 
 
+# INHERITED 2
 @register_object("protein_compartment_guy", "dataset")
 class ProteinCompartmentsGuy(AbstractDataset):
     """A pytorch Dataset for the classifying proteins into compartment."""
@@ -238,7 +238,6 @@ class ProteinCompartmentsGuy(AbstractDataset):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_sample(sample_dict, split_group):
@@ -381,6 +380,7 @@ class ProteinCompartmentsUniprotGuy(ProteinCompartmentsGuy):
         args.num_classes = 37
 
 
+# INHERITED 1
 @register_object("protein_compartment_uniprot_combined", "dataset")
 class ProteinCompartmentsUniprotCombined(ProteinCompartmentsGuy):
     def get_label(self, sample):
@@ -457,6 +457,7 @@ class ProteinCompartmentsUniprotCombined(ProteinCompartmentsGuy):
         args.num_classes = 22
 
 
+# USE THIS
 @register_object("protein_condensates_combined", "dataset")
 class ProteinCondensatesCombined(ProteinCompartmentsUniprotCombined):
     @property
@@ -488,7 +489,6 @@ class Protein_Compartments_Precomputed(Protein_Compartments):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_sample(sample_dict, split_group):
@@ -532,7 +532,6 @@ class Protein_Compartments_IDRs(Protein_Compartments):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_sample(sample_dict, split_group):
@@ -599,7 +598,6 @@ class Protein_Compartments_All_IDRs(Protein_Compartments):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_sample(sample_dict, split_group):
@@ -686,7 +684,6 @@ class ProteinCompartmentsAllIDRsGuy(ProteinCompartmentsGuy):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_idr_sample(sample_dict, split_group):
@@ -766,7 +763,6 @@ class ProteinCompartmentsAllIDRsIlan(ProteinCompartmentsGuy):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
 
         for sample_dict in tqdm(self.metadata_json):
@@ -799,7 +795,6 @@ class ProteinCompartmentsAllIDRsCondensatesGuy(ProteinCompartmentsCondensatesGuy
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_idr_sample(sample_dict, split_group):
@@ -831,7 +826,6 @@ class ProteinCompartmentsAllIDRsUniprotGuy(ProteinCompartmentsUniprotGuy):
     def create_dataset(
         self, split_group: Literal["train", "dev", "test"]
     ) -> List[dict]:
-
         dataset = []
         for sample_dict in tqdm(self.metadata_json):
             if self.skip_idr_sample(sample_dict, split_group):

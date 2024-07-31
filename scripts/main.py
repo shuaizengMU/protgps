@@ -16,7 +16,6 @@ from protgps.utils.callbacks import set_callbacks
 
 
 def train(args):
-
     # Remove callbacks from args for safe pickling later
     trainer = pl.Trainer.from_argparse_args(args)
     args.callbacks = None
@@ -37,7 +36,6 @@ def train(args):
         )
     )
 
-    
     # print args
     for key, value in sorted(vars(args).items()):
         print("{} -- {}".format(key.upper(), value))
@@ -57,10 +55,7 @@ def train(args):
     # train model
     if args.train:
         train_dataset = loaders.get_train_dataset_loader(args)
-        if args.dev:
-            dev_dataset = loaders.get_eval_dataset_loader(args, split="dev")
-        else:
-            dev_dataset = None
+        dev_dataset = loaders.get_eval_dataset_loader(args, split="dev")
         log.info("\nTraining Phase...")
         trainer.fit(model, train_dataset, dev_dataset)
         if trainer.checkpoint_callback:
@@ -75,7 +70,6 @@ def train(args):
 
 
 def eval(model, logger, args):
-
     # reinit trainer
     trainer = pl.Trainer(gpus=1)
 

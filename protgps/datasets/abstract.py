@@ -8,6 +8,7 @@ import numpy as np
 from torch.utils import data
 from protgps.utils.classes import ProtGPS, set_protgps_type, classproperty
 from protgps.utils.messages import METAFILE_NOTFOUND_ERR, LOAD_FAIL_MSG
+import pickle
 
 
 class AbstractDataset(data.Dataset, ProtGPS):
@@ -134,12 +135,48 @@ class AbstractDataset(data.Dataset, ProtGPS):
             metadata_json (dict): raw json dataset loaded
         """
         np.random.seed(seed)
-        for idx in range(len(metadata_json)):
-            if metadata_json[idx] == None:
-                continue
-            metadata_json[idx]["split"] = np.random.choice(
-                ["train", "dev", "test"], p=split_probs
+        if self.args.split_type == "random":
+            for idx in range(len(metadata_json)):
+                if metadata_json[idx] is None:
+                    continue
+                metadata_json[idx]["split"] = np.random.choice(
+                    ["train", "dev", "test"], p=split_probs
+                )
+        elif self.args.split_type == "mmseqs":
+            # mmseqs easy-cluster --min-seq-id 0.3 -c 0.8
+            # get all samples
+            to_split = {}
+
+            row2clust = pickle.load(
+                open(
+                    "/data/rsg/mammogram/pgmikhael/saved_models/condensates/mmseqs_row2cluster_30seq_80cov.p",
+                    "rb",
+                )
             )
+            # rule id
+            clusters = list(row2clust.values())
+            clust2count = Counter(clusters)
+            samples = sorted(list(set(clusters)))
+            np.random.shuffle(samples)
+            samples_cumsum = np.cumsum([clust2count[s] for s in samples])
+            # Find the indices for each quantile
+            split_indices = [
+                np.searchsorted(
+                    samples_cumsum, np.round(q, 3) * samples_cumsum[-1], side="right"
+                )
+                for q in np.cumsum(split_probs)
+            ]
+            split_indices[-1] = len(samples)
+            split_indices = np.concatenate([[0], split_indices])
+            for i in range(len(split_indices) - 1):
+                to_split.update(
+                    {
+                        sample: ["train", "dev", "test"][i]
+                        for sample in samples[split_indices[i] : split_indices[i + 1]]
+                    }
+                )
+            for idx in range(len(metadata_json)):
+                metadata_json[idx]["split"] = to_split[row2clust[idx]]
 
     def set_sample_weights(self, args: argparse.ArgumentParser) -> None:
         """
