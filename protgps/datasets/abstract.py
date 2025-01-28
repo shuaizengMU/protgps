@@ -149,7 +149,7 @@ class AbstractDataset(data.Dataset, ProtGPS):
 
             row2clust = pickle.load(
                 open(
-                    "/data/rsg/mammogram/pgmikhael/saved_models/condensates/mmseqs_row2cluster_30seq_80cov.p",
+                    "data/mmseqs_row2cluster_30seq_80cov.p",
                     "rb",
                 )
             )
