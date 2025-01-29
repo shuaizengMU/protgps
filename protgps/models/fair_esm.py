@@ -96,7 +96,7 @@ class FairEsm(AbstractModel):
         parser.add_argument(
             "--pretrained_hub_dir",
             type=str,
-            default="/Mounts/rbg-storage1/snapshots/metabolomics",
+            default="/home/protgps/esm_models",
             help="directory to torch hub where pretrained models are saved",
         )
         parser.add_argument(
