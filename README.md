@@ -32,14 +32,14 @@ mamba activate protgps
 1. Download model checkpoints from [zenodo](https://zenodo.org/records/14795445) and extract to `checkpoints/protgps`.
 
 
-### [ESM2](https://github.com/facebookresearch/esm/)
+**[ESM2](https://github.com/facebookresearch/esm/)**
 
 ```python
 import torch
 torch.hub.set_dir("checkpoints/esm2")
 model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t6_8M_UR50D")
 ```
-### [DR-BERT](https://github.com/qanastek/DrBERT)
+**[DR-BERT](https://github.com/qanastek/DrBERT)**
 
 ```python
 from transformers import AutoModel, AutoTokenizer
@@ -48,13 +48,19 @@ tokenizer = AutoTokenizer.from_pretrained("Dr-BERT/DrBERT-7GB", cache_dir="check
 model = AutoModel.from_pretrained("Dr-BERT/DrBERT-7GB", cache_dir="checkpoints/drbert")
 ```
 
-5. To train model:
+**Training**
     
 ```
 python scripts/dispatcher.py --config configs/protein_localization/full_prot_comp_pred.json --log_dir /path/to/logdir
 ```
 
-6. To generate proteins:
+**Inference**
+
+To make predictions, edit and run the [Predict.ipynb](notebook/Predict.ipynb) notebook.
+
+**Generation**
+
+To generate proteins:
 
 ```
 cd esm/examples/lm-design
@@ -70,12 +76,17 @@ The [Analysis](notebook/Analysis.ipynb) script is located under notebook. Data u
 ### Cite
 
 ```bibtex
-@article{kilgore2024chemical,
-  title={Chemical codes promote selective compartmentalization of proteins},
-  author={Kilgore, Henry and Chinn, Itamar and Mikhael, Peter and Mitnikov, Ilan and Van Dongen, Catherine and Zylberberg, Guy and Afeyan, Lena and Banani, Salman and Wilson-Hawken, Susana and Lee, Tony and others},
-  journal={bioRxiv},
-  pages={2024--04},
-  year={2024},
-  publisher={Cold Spring Harbor Laboratory}
+@article{
+doi:10.1126/science.adq2634,
+author = {Henry R. Kilgore  and Itamar Chinn  and Peter G. Mikhael  and Ilan Mitnikov  and Catherine Van Dongen  and Guy Zylberberg  and Lena Afeyan  and Salman F. Banani  and Susana Wilson-Hawken  and Tong Ihn Lee  and Regina Barzilay  and Richard A. Young },
+title = {Protein codes promote selective subcellular compartmentalization},
+journal = {Science},
+volume = {0},
+number = {0},
+pages = {eadq2634},
+year = {},
+doi = {10.1126/science.adq2634},
+URL = {https://www.science.org/doi/abs/10.1126/science.adq2634},
+eprint = {https://www.science.org/doi/pdf/10.1126/science.adq2634},
 }
 ```
