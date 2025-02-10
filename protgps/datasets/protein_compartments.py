@@ -109,7 +109,7 @@ class Protein_Compartments(AbstractDataset):
         Args:
             parser (argparse.ArgumentParser): argument parser
         """
-        super(Protein_Compartments, Protein_Compartments).add_args(parser)
+        AbstractDataset.add_args(parser)
         parser.add_argument(
             "--max_prot_len",
             type=int,
@@ -295,7 +295,7 @@ class ProteinCompartmentsGuy(AbstractDataset):
         Args:
             parser (argparse.ArgumentParser): argument parser
         """
-        Protein_Compartments.add_args(parser)
+        AbstractDataset.add_args(parser)
         parser.add_argument(
             "--max_prot_len",
             type=int,
