@@ -44,8 +44,10 @@ model, alphabet = torch.hub.load("facebookresearch/esm:main", "esm2_t6_8M_UR50D"
 ```python
 from transformers import AutoModel, AutoTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained("Dr-BERT/DrBERT-7GB", cache_dir="checkpoints/drbert")
-model = AutoModel.from_pretrained("Dr-BERT/DrBERT-7GB", cache_dir="checkpoints/drbert")
+checkpoint = "checkpoints/drbert"
+tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+model = AutoModelForTokenClassification.from_pretrained(checkpoint)
+
 ```
 
 **Training**
