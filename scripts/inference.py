@@ -104,7 +104,7 @@ def get_valid_rows(df: pd.DataFrame, cols: list) -> list:
     -------
     list
         List of row indices with valid sequence length
-    """
+    """    
     rows_with_valid_seq_len = []
     for i in range(len(df)):
         if all([len(df.iloc[i][c]) < 1800 for c in cols]):

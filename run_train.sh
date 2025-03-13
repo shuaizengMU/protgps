@@ -1,0 +1,1 @@
+python scripts/dispatcher.py --config configs/protein_localization/full_prot_comp_pred.json --log_dir ./test_runs

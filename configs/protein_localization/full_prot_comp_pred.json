@@ -19,7 +19,7 @@
     "lightning_name": ["base"],
     "weight_decay": [0],
     "momentum": [0.9],
-    "max_epochs": [30],
+    "max_epochs": [26],
     "lr_decay": [0.91],
     "scheduler_name": ["reduce_on_plateau"],
     "lr": [1e-3],
