@@ -1,8 +1,8 @@
 
-MODEL_PATH="/home/zengs/data/Code/reproduce/protgps/checkpoints/protgps/e2ecc4152487050a625993048b8f0feb/e2ecc4152487050a625993048b8f0febepoch=20.ckpt"
+MODEL_PATH="/home/zengs/data/Code/reproduce/protgps/checkpoints/protgps/225adf48176033377979a13197baea61/last.ckpt"
 ESM_DIR="~/zengs_data/torch_hub/checkpoints/"
 DATA_FILENAME="/home/zengs/data/Code/reproduce/protgps/data/dataset_from_json.xlsx"
-OUTPUT_FILENAME="/home/zengs/data/Code/reproduce/protgps/test_runs/20ckpt_prediction.csv"
+OUTPUT_FILENAME="/home/zengs/data/Code/reproduce/protgps/test_runs/finetune-26epoch/prediction.csv"
 
 python inference.py --model_path $MODEL_PATH \
       --esm_dir $ESM_DIR \

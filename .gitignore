@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 checkpoints/*
 tensorboard/*
+test_runs/*
+custom_model/wandb/*
