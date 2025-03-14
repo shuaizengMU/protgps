@@ -164,3 +164,4 @@ test_runs/*/checkpoint-*
 test_runs/*.args
 
 custom_model/wandb/*
+test_runs/reprod-*/*/checkpoint-*
