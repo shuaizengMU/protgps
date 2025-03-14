@@ -33,7 +33,7 @@ POOLING_ALL_MEAN = "POOLING_ALL_MEAN"
 POOLING_CLS = "POOLING_CLS"
 
 
-_POOLING_METHOD = POOLING_ALL_MEAN
+_POOLING_METHOD = POOLING_CLS
 DATASET_FILENAME = "/home/zengs/data/Code/reproduce/protgps/data/dataset_from_json.csv"
 OUTPUT_DIR = f"/home/zengs/data/Code/reproduce/protgps/test_runs/reproduce_model-{_POOLING_METHOD}"  
 

@@ -160,5 +160,7 @@ cython_debug/
 #.idea/
 checkpoints/*
 tensorboard/*
-test_runs/*
+test_runs/*/checkpoint-*
+test_runs/*.args
+
 custom_model/wandb/*
