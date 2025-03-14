@@ -7,6 +7,7 @@ from sklearn.metrics import roc_auc_score, f1_score, matthews_corrcoef, precisio
 
 import pandas as pd
 import pickle
+import fire
 
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
@@ -113,12 +114,9 @@ class ESM2MLP(nn.Module):
     self.esm = EsmModel.from_pretrained(model_name)
     hidden_dim = self.esm.config.hidden_size  # ESM2-8M has 320 hidden dim
     self.classifier = nn.Sequential(
+        nn.Dropout(0.1),
         nn.Linear(hidden_dim, 512),
         nn.BatchNorm1d(512), 
-        nn.ReLU(),
-        nn.Dropout(0.1),
-        nn.Linear(512, 512),
-        nn.BatchNorm1d(512),
         nn.ReLU(),
         nn.Dropout(0.1),
         nn.Linear(512, num_classes)  # Output 12 logits
@@ -154,14 +152,14 @@ class ESM2MLP(nn.Module):
     return loss
 
 
-def train_model():
+def train_model(pooling_method):
   
   model_name = "facebook/esm2_t6_8M_UR50D"
   tokenizer = EsmTokenizer.from_pretrained(model_name)
   train_dataset, val_dataset, test_dataset = get_dataset(tokenizer, DATASET_FILENAME)
   
   
-  model = ESM2MLP(model_name, pooling=_POOLING_METHOD)
+  model = ESM2MLP(model_name, pooling=pooling_method)
 
   
   training_args = TrainingArguments(
@@ -213,4 +211,4 @@ def train_model():
       pickle.dump(one_results, f)
 
 if __name__ == "__main__":
-  train_model()
+  fire.Fire(train_model)
