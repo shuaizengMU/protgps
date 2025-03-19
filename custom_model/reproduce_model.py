@@ -22,11 +22,18 @@ print("Using GPU:", torch.cuda.current_device())
 print("GPU Name:", torch.cuda.get_device_name(torch.cuda.current_device()))
 
 
-LABEL_COLS = [
-    'TRANSCRIPTIONAL', 'CHROMOSOME', 'NUCLEAR_PORE_COMPLEX',
-    'NUCLEAR_SPECKLE', 'P-BODY', 'PML-BDOY', 'POST_SYNAPTIC_DENSITY',
-    'STRESS_GRANULE', 'NUCLEOLUS', 'CAJAL_BODY', 'RNA_GRANULE', 'CELL_JUNCTION'
-]
+LABEL_COLS = ["NUCLEAR_SPECKLE",
+              "P-BODY",
+              "PML-BDOY",
+              "POST_SYNAPTIC_DENSITY",
+              "STRESS_GRANULE",
+              "CHROMOSOME",
+              "NUCLEOLUS",
+              "NUCLEAR_PORE_COMPLEX",
+              "CAJAL_BODY",
+              "RNA_GRANULE",
+              "CELL_JUNCTION",
+              "TRANSCRIPTIONAL"]
 
 
 POOLING_MASK_MEAN = "POOLING_MASK_MEAN"
@@ -34,14 +41,8 @@ POOLING_ALL_MEAN = "POOLING_ALL_MEAN"
 POOLING_CLS = "POOLING_CLS"
 
 
-_POOLING_METHOD = POOLING_CLS
-DATASET_FILENAME = "/home/zengs/data/Code/reproduce/protgps/data/dataset_from_json.csv"
-OUTPUT_DIR = f"/home/zengs/data/Code/reproduce/protgps/test_runs/reproduce_model-{_POOLING_METHOD}"  
 
-
-
-if not os.path.exists(OUTPUT_DIR):
-  os.makedirs(OUTPUT_DIR, exist_ok=True)
+DATASET_FILENAME = "/home/zengs/data/Code/reproduce/protgps/data/official/mmseqs_splits.data.csv"
 
 
 def get_dataset(tokenizer, dataset_filename):
@@ -114,9 +115,12 @@ class ESM2MLP(nn.Module):
     self.esm = EsmModel.from_pretrained(model_name)
     hidden_dim = self.esm.config.hidden_size  # ESM2-8M has 320 hidden dim
     self.classifier = nn.Sequential(
-        nn.Dropout(0.1),
         nn.Linear(hidden_dim, 512),
-        nn.BatchNorm1d(512), 
+        nn.BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True), 
+        nn.ReLU(),
+        nn.Dropout(0.1),
+        nn.Linear(512, 512),
+        nn.BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True), 
         nn.ReLU(),
         nn.Dropout(0.1),
         nn.Linear(512, num_classes)  # Output 12 logits
@@ -154,12 +158,19 @@ class ESM2MLP(nn.Module):
 
 def train_model(pooling_method):
   
+  OUTPUT_DIR = f"/home/zengs/data/Code/reproduce/protgps/test_runs/reproduce_model-{pooling_method}"  
+
+  if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+  
   model_name = "facebook/esm2_t6_8M_UR50D"
   tokenizer = EsmTokenizer.from_pretrained(model_name)
   train_dataset, val_dataset, test_dataset = get_dataset(tokenizer, DATASET_FILENAME)
   
   
   model = ESM2MLP(model_name, pooling=pooling_method)
+  print(model)
 
   
   training_args = TrainingArguments(
@@ -167,16 +178,16 @@ def train_model(pooling_method):
       evaluation_strategy="epoch",
       save_strategy="epoch",
       per_device_train_batch_size=10,
-      per_device_eval_batch_size=20,
-      num_train_epochs=90,
+      per_device_eval_batch_size=60,
+      num_train_epochs=30,
       weight_decay=0.0,
       learning_rate=1e-3,
       lr_scheduler_type="cosine",
-      warmup_steps=10,
+      warmup_steps=15,
       fp16=True,  # Use mixed precision
       logging_dir=os.path.join(OUTPUT_DIR, "logs"),
       logging_steps=200,
-      save_total_limit=10,
+      save_total_limit=15,
       report_to="wandb",
       metric_for_best_model="AUCROC",
       greater_is_better=True,
@@ -185,7 +196,7 @@ def train_model(pooling_method):
   )
 
   early_stopping = EarlyStoppingCallback(
-      early_stopping_patience=5,  # Stop training if the evaluation metric doesn't improve for 2 evaluations
+      early_stopping_patience=10,  # Stop training if the evaluation metric doesn't improve for 2 evaluations
       early_stopping_threshold=0.0,  # The minimum change in the monitored metric to qualify as an improvement
   )
 

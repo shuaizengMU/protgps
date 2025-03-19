@@ -104,7 +104,6 @@ def worker(script, gpu, job_queue, done_queue):
 
 
 if __name__ == "__main__":
-
     args = parser.parse_args()
     if not os.path.exists(args.config_path):
         print(CONFIG_NOT_FOUND_MSG.format("experiment", args.config_path))

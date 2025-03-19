@@ -136,17 +136,29 @@ class AbstractDataset(data.Dataset, ProtGPS):
         """
         np.random.seed(seed)
         if self.args.split_type == "random":
+            print("====================================")
+            print("random split")
+            
             for idx in range(len(metadata_json)):
                 if metadata_json[idx] is None:
                     continue
                 metadata_json[idx]["split"] = np.random.choice(
                     ["train", "dev", "test"], p=split_probs
                 )
+            
+            pickle_file_path = "/home/zengs/data/Code/reproduce/protgps/data/official/random_splits.data"
+            with open(pickle_file_path, 'wb') as pickle_file:
+                # Use pickle.dump() to serialize and save the metadata
+                pickle.dump(metadata_json, pickle_file)
+            print("Saved splits to {}".format(pickle_file_path))
+            # exit(0)
+                
         elif self.args.split_type == "mmseqs":
             # mmseqs easy-cluster --min-seq-id 0.3 -c 0.8
             # get all samples
             to_split = {}
-
+            print("====================================")
+            print("mmseqs split")
             row2clust = pickle.load(
                 open(
                     "data/mmseqs_row2cluster_30seq_80cov.p",
@@ -177,6 +189,13 @@ class AbstractDataset(data.Dataset, ProtGPS):
                 )
             for idx in range(len(metadata_json)):
                 metadata_json[idx]["split"] = to_split[row2clust[idx]]
+            
+            pickle_file_path = "/home/zengs/data/Code/reproduce/protgps/data/official/mmseqs_splits.data"
+            with open(pickle_file_path, 'wb') as pickle_file:
+                # Use pickle.dump() to serialize and save the metadata
+                pickle.dump(metadata_json, pickle_file)
+            print("Saved splits to {}".format(pickle_file_path))
+            # exit(0)
 
     def set_sample_weights(self, args: argparse.ArgumentParser) -> None:
         """

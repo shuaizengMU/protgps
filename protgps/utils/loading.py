@@ -8,7 +8,7 @@ from protgps.utils.registry import get_object
 import torch
 from torch.utils import data
 from protgps.utils.sampler import DistributedWeightedSampler
-from pytorch_lightning.utilities.cloud_io import load as pl_load
+# from pytorch_lightning.utilities.cloud_io import load as pl_load
 
 
 string_classes = (str, bytes)
@@ -215,7 +215,7 @@ def get_lightning_model(args: Namespace):
         elif args.checkpoint_path.endswith(".ckpt"):
             model = get_object(args.lightning_name, "lightning")(args)
             modelpath = args.checkpoint_path
-            checkpoint = pl_load(
+            checkpoint = torch.load(
                 args.checkpoint_path, map_location=lambda storage, loc: storage
             )
             snargs = checkpoint["hyper_parameters"]["args"]

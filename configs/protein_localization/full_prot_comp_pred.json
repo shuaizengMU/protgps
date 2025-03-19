@@ -19,7 +19,7 @@
     "lightning_name": ["base"],
     "weight_decay": [0],
     "momentum": [0.9],
-    "max_epochs": [26],
+    "max_epochs": [30],
     "lr_decay": [0.91],
     "scheduler_name": ["reduce_on_plateau"],
     "lr": [1e-3],
@@ -49,7 +49,8 @@
     "gpus": [1],
     "val_check_interval": [1.0],
     "ignore_warnings": [false],
-    "dropout": [0.1]
+    "dropout": [0.1],
+    "split_type": ["random"]
   },
   "available_gpus": ["0"]
 }

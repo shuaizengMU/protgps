@@ -165,3 +165,10 @@ test_runs/*.args
 
 custom_model/wandb/*
 test_runs/reprod-*/*/checkpoint-*
+test_runs/reprod-*/*/*.pkl
+test_runs/*/*.args
+custom_model/reproduce_model.py
+test_runs/*/*.pkl
+test_runs/*/*/*.ckpt
+test_runs/*/*.ckpt
+test_runs/*/*.txt

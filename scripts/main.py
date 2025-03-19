@@ -14,8 +14,40 @@ from protgps.utils.registry import get_object
 import protgps.utils.loading as loaders
 from protgps.utils.callbacks import set_callbacks
 
+import random
+import numpy as np
+
+
+COMPARTMENTS = [
+    "nuclear_speckle",
+    "p-body",
+    "pml-bdoy",
+    "post_synaptic_density",
+    "stress_granule",
+    "chromosome",
+    "nucleolus",
+    "nuclear_pore_complex",
+    "cajal_body",
+    "rna_granule",
+    "cell_junction",
+    "transcriptional",
+]
+
+
+def set_seed(seed: int):
+    random.seed(seed)  # Python random module
+    np.random.seed(seed)  # NumPy
+    torch.manual_seed(seed)  # PyTorch CPU
+    torch.cuda.manual_seed(seed)  # PyTorch GPU (single-GPU)
+    torch.cuda.manual_seed_all(seed)  # PyTorch GPU (multi-GPU)
+    torch.backends.cudnn.deterministic = True  # Ensures deterministic behavior
+    torch.backends.cudnn.benchmark = False  # Slows down but ensures reproducibility
+
 
 def train(args):
+    
+    set_seed(43)
+    
     # Remove callbacks from args for safe pickling later
     trainer = pl.Trainer.from_argparse_args(args)
     args.callbacks = None
@@ -24,6 +56,7 @@ def train(args):
     args.world_size = args.num_nodes * args.num_processes
     args.global_rank = trainer.global_rank
     args.local_rank = trainer.local_rank
+    
 
     repo = git.Repo(search_parent_directories=True)
     commit = repo.head.object
@@ -35,7 +68,6 @@ def train(args):
             commit.message,
         )
     )
-
     # print args
     for key, value in sorted(vars(args).items()):
         print("{} -- {}".format(key.upper(), value))
@@ -51,11 +83,67 @@ def train(args):
 
     # add callbacks
     trainer.callbacks = set_callbacks(trainer, args)
+    
+    print(model)
+    print(trainer.__dict__)
+    print(args)
+
+
+
+    def print_params(model):
+        # Get all parameters
+        total_params = sum(p.numel() for p in model.parameters())
+        
+        # Get trainable parameters
+        trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+        # Calculate the percentage of trainable parameters
+        trainable_percentage = (trainable_params / total_params) * 100
+
+        print(f"Total Parameters: {total_params}")
+        print(f"Trainable Parameters: {trainable_params}")
+        print(f"Percentage of Trainable Parameters: {trainable_percentage:.2f}%")
+
+    # Example: print parameters for your model
+    print_params(model)
 
     # train model
     if args.train:
         train_dataset = loaders.get_train_dataset_loader(args)
         dev_dataset = loaders.get_eval_dataset_loader(args, split="dev")
+        
+        ##########
+        seqs = [] 
+        label = []
+        ids = []
+        for one in train_dataset:
+            seqs.append(one['x'])
+            label.append(one['y'])
+            ids.append(one['entry_id'])
+        
+        import numpy as np
+        import pandas as pd
+        seqs = np.concatenate(seqs, axis=0)
+        label = np.concatenate(label, axis=0)
+        ids = np.concatenate(ids, axis=0)
+        
+        data_df = pd.DataFrame({
+            'id': ids,
+        })
+        for j, condensate in enumerate(COMPARTMENTS):
+            data_df[f"{condensate.upper()}"] = label[:, j].tolist()
+        data_df["sequence"] = seqs.tolist()
+        
+        output_dir = "/home/zengs/data/Code/reproduce/protgps/data/official_dataloader/mmseqs_train.csv"
+        data_df.to_csv(output_dir, index=False)
+
+        print(ids[0])
+        print(label[0])
+        print(seqs[0])
+        
+        # exit(0)
+        ####
+        
         log.info("\nTraining Phase...")
         trainer.fit(model, train_dataset, dev_dataset)
         if trainer.checkpoint_callback:
